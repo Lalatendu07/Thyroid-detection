@@ -1,5 +1,5 @@
 from thyroid_detector.utils import get_collection_as_dataframe
-from thyroid_detector.exception import MushroomException
+from thyroid_detector.exception import ThyroidException
 from thyroid_detector.entity import config_entity
 from thyroid_detector.components.data_ingestion import DataIngestion 
 import os, sys
