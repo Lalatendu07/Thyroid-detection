@@ -28,7 +28,15 @@ class DataIngestion:
 
             logging.info("Replacing the '?' with np.NAN")
             #Replacing the '?' with np.NAN  
-            df.replace(to_replace='?',value=np.NAN,inplace=True)  
+            df.replace(to_replace='?',value=np.NAN,inplace=True) 
+
+            df['sex'].fillna(str(df['sex'].mode()),inplace=True)
+            df['age'].fillna(int(df['age'].median()),inplace=True)
+            df['TSH'].fillna(int(df['TSH'].median()),inplace=True)
+            df['T3'].fillna(int(df['T3'].median()),inplace=True)
+            df['TT4'].fillna(int(df['TT4'].median()),inplace=True)
+            df['T4U'].fillna(int(df['T4U'].median()),inplace=True)
+            df['FTI'].fillna(int(df['FTI'].median()),inplace=True) 
 
             logging.info("Create feature store folder if not exist")
             #Create feature store folder if not exist
