@@ -28,7 +28,17 @@ class DataIngestionConfig:
         except Exception as e :
             raise ThyroidException(e, sys)
 
-class DataValidationConfig:...
+class DataValidationConfig:
+
+    def __init__(self,training_pipeline_config:TrainingPipelineConfig):
+        try:
+            self.data_validation_dir = os.path.join(training_pipeline_config.artifact_dir,"data_validation")
+            self.report_file_path = os.path.join(self.data_validation_dir, "report.yaml")
+            self.missing_threshold:float = 0.2
+            self.base_file_path = os.path.join("/config/workspace/hypothyroid.csv")
+        except Exception as e :
+            raise ThyroidException(e, sys)
+            
 class DataTransformationConfig:...
 class ModelTrainerConfig:...
 class ModelEvaluationConfig:...
