@@ -5,6 +5,9 @@ from thyroid_detector.exception import ThyroidException
 FILE_NAME = 'thyroid.csv'
 TRAIN_FILE_NAME = 'train.csv'
 TEST_FILE_NAME = 'test.csv'
+TRANSFORMER_OBJECT_FILE_NAME = "transformer.pkl"
+MODEL_FILE_NAME = "model.pkl"
+LABEL_ENCODER_OBJECT_FILE_NAME = "label_encoder.pkl"
 
 class TrainingPipelineConfig:
 
@@ -39,7 +42,18 @@ class DataValidationConfig:
         except Exception as e :
             raise ThyroidException(e, sys)
             
-class DataTransformationConfig:...
+class DataTransformationConfig:
+
+    def __init__(self,training_pipeline_config:TrainingPipelineConfig):
+        try:
+            self.data_transformation_dir = os.path.join(training_pipeline_config.artifact_dir,"data_transformation")
+            self.transform_object_path = os.path.join(self.data_transformation_dir,"transformer",TRANSFORMER_OBJECT_FILE_NAME)
+            self.transformed_train_path = os.path.join(self.data_transformation_dir,"transformed",TRAIN_FILE_NAME)
+            self.transformed_test_path = os.path.join(self.data_transformation_dir,"transformed",TEST_FILE_NAME)
+            self.label_encoder_path = os.path.join(self.data_transformation_dir,"label_encoder",LABEL_ENCODER_OBJECT_FILE_NAME)
+        except Exception as e :
+            raise ThyroidException(e, sys)
+
 class ModelTrainerConfig:...
 class ModelEvaluationConfig:...
 class ModelPusherConfig:...
