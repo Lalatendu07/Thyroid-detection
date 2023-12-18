@@ -37,6 +37,7 @@ class DataIngestion:
             df['TT4'].fillna(int(df['TT4'].median()),inplace=True)
             df['T4U'].fillna(int(df['T4U'].median()),inplace=True)
             df['FTI'].fillna(int(df['FTI'].median()),inplace=True) 
+            df.drop('TBG',axis=1,inplace=True)
 
             logging.info("Create feature store folder if not exist")
             #Create feature store folder if not exist

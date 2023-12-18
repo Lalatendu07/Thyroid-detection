@@ -21,10 +21,10 @@ class DataTransformation:
             raise ThyroidException(e, sys)   
 
     @classmethod
-    def get_data_transformation_object(cls)->Pipeline:
+    def get_data_transformation_object(cls):
         try:
             standard_scaler = StandardScaler()
-            constant_pipeline=Pipeline(steps=['StandardScaler',standard_scaler])
+            return standard_scaler
         except Exception as e :
             raise ThyroidException(e, sys)             
 
@@ -37,11 +37,18 @@ class DataTransformation:
             #Selecting input feature for train and test dataset
             input_feature_train_df=train_df.drop(TARGET_COLUMN,axis=1)
             input_feature_test_df=test_df.drop(TARGET_COLUMN,axis=1)
-
+            
             #Selecting target feature for train and test dataset
             target_feature_train_df = train_df[TARGET_COLUMN]
             target_feature_test_df = test_df[TARGET_COLUMN]
+            
+            #transforming input features
+            feature_encoder = LabelEncoder()
+            for column in input_feature_train_df.columns:
+               input_feature_train_df[column] = feature_encoder.fit_transform(input_feature_train_df[column])
+               input_feature_test_df[column] = feature_encoder.fit_transform(input_feature_test_df[column])
 
+            
             label_encoder = LabelEncoder()
             label_encoder.fit(target_feature_train_df)
 
@@ -50,12 +57,40 @@ class DataTransformation:
             target_feature_test_arr=label_encoder.transform(target_feature_test_df)
 
             transformation_pipeline = DataTransformation.get_data_transformation_object()
-            transformation_pipeline.fit(input_feature_train_df)
+            #transformation_pipeline.fit(input_feature_train_df)
 
             #transforming input feature
-            input_feature_train_arr=transformation_pipeline.transform(input_feature_train_df)
-            input_feature_test_arr=transformation_pipeline.transform(input_feature_test_df)
+            input_feature_train_arr=transformation_pipeline.fit_transform(input_feature_train_df)
+            input_feature_test_arr=transformation_pipeline.fit_transform(input_feature_test_df)
 
+            train_arr = np.c_[input_feature_train_arr , target_feature_train_arr]
+            test_arr = np.c_[input_feature_test_arr , target_feature_test_arr]
+
+            #Save numpy array
+            utils.save_numpy_array_data(file_path=self.data_transformation_config.transformed_train_path ,
+                                        array=train_arr)
+
+            utils.save_numpy_array_data(file_path=self.data_transformation_config.transformed_test_path , 
+                                        array=test_df)                 
+
+            utils.save_object(file_path=self.data_transformation_config.transform_object_path ,
+                              obj=transformation_pipeline)  
+
+            utils.save_object(file_path=self.data_transformation_config.label_encoder_path, 
+                              obj=label_encoder)
+
+            utils.save_object(file_path=self.data_transformation_config.feature_encoder_path, 
+                              obj=feature_encoder)                  
+
+            data_transformation_artifact = artifact_entity.DataTransformationArtifact(
+                                   transform_object_path=self.data_transformation_config.transform_object_path,
+                                   transformed_train_path=self.data_transformation_config.transformed_train_path,
+                                   transformed_test_path=self.data_transformation_config.transformed_test_path,
+                                   label_encoder_path=self.data_transformation_config.label_encoder_path,
+                                   feature_encoder_path=self.data_transformation_config.feature_encoder_path) 
+
+            logging.info(f"Data transformation object {data_transformation_artifact}")
+            return data_transformation_artifact                                                                                                                           
 
         except Exception as e:
             raise ThyroidException(e, sys)     
