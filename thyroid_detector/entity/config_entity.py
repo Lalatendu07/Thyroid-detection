@@ -8,7 +8,6 @@ TEST_FILE_NAME = 'test.csv'
 TRANSFORMER_OBJECT_FILE_NAME = "transformer.pkl"
 MODEL_FILE_NAME = "model.pkl"
 LABEL_ENCODER_OBJECT_FILE_NAME = "label_encoder.pkl"
-FEATURE_ENCODER = "feature_encoder.pkl"
 
 class TrainingPipelineConfig:
 
@@ -52,7 +51,7 @@ class DataTransformationConfig:
             self.transformed_train_path = os.path.join(self.data_transformation_dir,"transformed",TRAIN_FILE_NAME)
             self.transformed_test_path = os.path.join(self.data_transformation_dir,"transformed",TEST_FILE_NAME)
             self.label_encoder_path = os.path.join(self.data_transformation_dir,"label_encoder",LABEL_ENCODER_OBJECT_FILE_NAME)
-            self.feature_encoder_path = os.path.join(self.data_transformation_dir,"feature_encoder",FEATURE_ENCODER)
+            
         except Exception as e :
             raise ThyroidException(e, sys)
 
@@ -67,5 +66,21 @@ class ModelTrainerConfig:
         except Exception as e :
             raise ThyroidException(e, sys)
 
-class ModelEvaluationConfig:...
-class ModelPusherConfig:...
+class ModelEvaluationConfig:
+    def __init__(self,training_pipeline_config:TrainingPipelineConfig):
+        try:
+            self.change_threshold = 0.01
+        except Exception as e :
+            raise ThyroidException(e, sys)
+
+class ModelPusherConfig:
+    def __init__(self,training_pipeline_config:TrainingPipelineConfig):
+        try:
+            self.model_pusher_dir = os.path.join(training_pipeline_config.artifact_dir, "model_pusher")
+            self.saved_model_dir = os.path.join("saved_models")
+            self.pusher_model_dir = os.path.join(self.model_pusher_dir, "saved_models")
+            self.pusher_model_path = os.path.join(self.pusher_model_dir,MODEL_FILE_NAME)
+            self.pusher_transformer_path = os.path.join(self.pusher_model_dir,TRANSFORMER_OBJECT_FILE_NAME)
+            self.pusher_label_encoder_path = os.path.join(self.pusher_model_dir,LABEL_ENCODER_OBJECT_FILE_NAME)
+        except Exception as e:
+            raise ThyroidException(e, sys)
