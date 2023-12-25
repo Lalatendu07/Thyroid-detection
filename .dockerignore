@@ -1,7 +1,8 @@
 artifact
 logs
 prediction
-Notebook
+Notebook.ipynb
+Documents
 saved_models
 *.egg-info
 .env
