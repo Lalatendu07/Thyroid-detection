@@ -15,3 +15,5 @@ python main.py
 ```
 ### Dataset link 
 https://github.com/Lalatendu07/Thyroid-detection/blob/main/hypothyroid.csv
+
+### Website Link :- http://ec2-35-154-207-161.ap-south-1.compute.amazonaws.com:8080/
